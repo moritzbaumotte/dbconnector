@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 import com.baumotte.dbconnector.entities.Ticket;
 
-@Path("/queries")
+@Path("/queries/ticketing")
 public class DbEP {
 
 	@GET
