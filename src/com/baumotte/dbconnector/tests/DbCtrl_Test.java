@@ -12,7 +12,7 @@ import com.baumotte.dbconnector.entities.Ticket;
 class DbCtrl_Test {
 
 	@Test
-	void test() {
+	void test_getTickets() {
 		DbCtrl dbCtrl = new DbCtrl();
 		
 		try {
@@ -24,6 +24,23 @@ class DbCtrl_Test {
 			assertTrue(false);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			assertTrue(false);
+		}
+		assertTrue(true);
+	}
+	
+	@Test
+	void test_submitTicket() {
+		DbCtrl dbCtrl = new DbCtrl();
+		
+		try {
+			dbCtrl.submitTicket("moritz@baumotte.com", "test ticket", "this is a test description");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			assertTrue(false);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			assertTrue(false);
 		}
 		assertTrue(true);
 	}
