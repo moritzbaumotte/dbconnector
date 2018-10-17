@@ -96,7 +96,7 @@ public class TicketingDbEP {
 		Response r;
 		
 		try {
-			dbCtrl.submitResponse(response.getResponseText(), response.getTicketId(), email);
+			dbCtrl.submitResponse(response.getResponseText(), id, email);
 			r = Response
 					.status(Response.Status.OK)
 					.build();
