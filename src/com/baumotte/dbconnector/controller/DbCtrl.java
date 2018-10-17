@@ -80,6 +80,14 @@ public class DbCtrl {
 		return responses;
 	}
 	
+	/**
+	 * create ticket
+	 * @param email
+	 * @param title
+	 * @param text
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void submitTicket(String email, String title, String text) throws SQLException, ClassNotFoundException {
 		String query = "insert into tickets (email, title, text) values (?, ?, ?)";
 		
@@ -90,6 +98,20 @@ public class DbCtrl {
 		prepStmt.setString(1, email);
 		prepStmt.setString(2, title);
 		prepStmt.setString(3, text);
+	
+		prepStmt.executeUpdate();
+	}
+	
+	public void submitResponse(String response_text, int ticket_id, String email) throws SQLException, ClassNotFoundException {
+		String query = "insert into responses (response_text, ticket_id, email) values (?, ?, ?)";
+		
+		Class.forName(DB_DRIVER);
+		
+		Connection dbConnection = getDBConnection();
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		prepStmt.setString(1, response_text);
+		prepStmt.setInt(2, ticket_id);
+		prepStmt.setString(3, email);
 	
 		prepStmt.executeUpdate();
 	}

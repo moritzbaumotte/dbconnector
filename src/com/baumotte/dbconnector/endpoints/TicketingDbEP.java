@@ -87,5 +87,28 @@ public class TicketingDbEP {
 		
 		return r;
 	}
+	
+	@PUT
+	@Path ("/{user}/tickets/{id}/responses")
+	@Consumes (MediaType.APPLICATION_JSON)
+	@Produces (MediaType.APPLICATION_JSON)
+	public Response createResponset(com.baumotte.dbconnector.entities.Response response, @PathParam("user") String email, @PathParam("id") int id) {
+		Response r;
+		
+		try {
+			dbCtrl.submitResponse(response.getResponseText(), response.getTicketId(), email);
+			r = Response
+					.status(Response.Status.OK)
+					.build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		
+		return r;
+	}
 
 }
