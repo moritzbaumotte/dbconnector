@@ -58,7 +58,7 @@ public class DbCtrl {
 	 */
 	public ArrayList<Response> getResponses(int ticketID) throws SQLException, ClassNotFoundException {
 		ArrayList<Response> responses = new ArrayList<>();
-		String query = "select id, response_text, ticket_id from responses where ticket_id = ?;";
+		String query = "select id, response_text, ticket_id, email from responses where ticket_id = ?;";
 		
 		Class.forName(DB_DRIVER);
 		
@@ -72,11 +72,26 @@ public class DbCtrl {
 			responses.add(new Response(
 						rs.getInt("id"),
 						rs.getString("response_text"),
-						rs.getInt("ticket_id")
+						rs.getInt("ticket_id"),
+						rs.getString("email")
 					));
 		}
 		
 		return responses;
+	}
+	
+	public void submitTicket(String email, String title, String text) throws SQLException, ClassNotFoundException {
+		String query = "insert into tickets (email, title, text) values (?, ?, ?)";
+		
+		Class.forName(DB_DRIVER);
+		
+		Connection dbConnection = getDBConnection();
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		prepStmt.setString(1, email);
+		prepStmt.setString(2, title);
+		prepStmt.setString(3, text);
+	
+		prepStmt.executeUpdate();
 	}
 	
 	/**

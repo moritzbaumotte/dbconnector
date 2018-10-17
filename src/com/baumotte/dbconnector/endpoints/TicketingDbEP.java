@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.baumotte.dbconnector.controller.DbCtrl;
+import com.baumotte.dbconnector.entities.Ticket;
 
 @Path("/queries/ticketing")
 public class TicketingDbEP {
@@ -23,11 +25,11 @@ public class TicketingDbEP {
 	}
 
 	@GET
-	@Path ("/tickets")
+	@Path ("/{user}/tickets")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTickets(@QueryParam("user") String email) {
-		Response r = null;
+	public Response getTickets(@PathParam("user") String email) {
+		Response r;
 		try {
 			r = Response
 					.status(Response.Status.OK)
@@ -35,17 +37,19 @@ public class TicketingDbEP {
 					.build();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 		return r;
 	}
 	
 	@GET
-	@Path ("/tickets/{id}/responses")
+	@Path ("/{user}/tickets/{id}/responses")
 	@Produces (MediaType.APPLICATION_JSON)
-	public Response getResponses(@PathParam("id") int id) {
-		Response r = null;
+	public Response getResponses(@PathParam("user") String email, @PathParam("id") int id) {
+		Response r;
 		try {
 			r = Response
 					.status(Response.Status.OK)
@@ -53,9 +57,34 @@ public class TicketingDbEP {
 					.build();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
+		return r;
+	}
+	
+	@PUT
+	@Path ("/{user}/tickets")
+	@Consumes (MediaType.APPLICATION_JSON)
+	@Produces (MediaType.APPLICATION_JSON)
+	public Response createTicket(Ticket ticket, @PathParam("user") String email) {
+		Response r;
+		
+		try {
+			dbCtrl.submitTicket(email, ticket.getTitle(), ticket.getDescription());
+			r = Response
+					.status(Response.Status.OK)
+					.build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		
 		return r;
 	}
 
