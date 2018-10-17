@@ -27,7 +27,7 @@ public class DbCtrl {
 		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
 		prepStmt.setString(1, email);
 	
-		ResultSet rs = prepStmt.executeQuery(query);
+		ResultSet rs = prepStmt.executeQuery();
 		
 		while(rs.next()) {
 			tickets.add(new Ticket(
