@@ -34,7 +34,8 @@ class DbCtrl_Test {
 		DbCtrl dbCtrl = new DbCtrl();
 		
 		try {
-			dbCtrl.submitTicket("moritz@baumotte.com", "test ticket", "this is a test description");
+			int result = dbCtrl.submitTicket("moritz@baumotte.com", "test ticket", "this is a test description");
+			System.out.println("result id: " + result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			assertTrue(false);

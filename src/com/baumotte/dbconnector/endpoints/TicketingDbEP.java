@@ -74,9 +74,10 @@ public class TicketingDbEP {
 		Response r;
 		
 		try {
-			dbCtrl.submitTicket(email, ticket.getTitle(), ticket.getDescription());
+			int id = dbCtrl.submitTicket(email, ticket.getTitle(), ticket.getDescription());
 			r = Response
 					.status(Response.Status.OK)
+					.entity(id)
 					.build();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,9 +98,10 @@ public class TicketingDbEP {
 		Response r;
 		
 		try {
-			dbCtrl.submitResponse(response.getResponseText(), id, email);
+			int respId = dbCtrl.submitResponse(response.getResponseText(), id, email);
 			r = Response
 					.status(Response.Status.OK)
+					.entity(respId)
 					.build();
 		} catch (SQLException e) {
 			e.printStackTrace();
