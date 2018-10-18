@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -65,7 +66,7 @@ public class TicketingDbEP {
 		return r;
 	}
 	
-	@PUT
+	@POST
 	@Path ("/{user}/tickets")
 	@Consumes (MediaType.APPLICATION_JSON)
 	@Produces (MediaType.APPLICATION_JSON)
@@ -88,7 +89,7 @@ public class TicketingDbEP {
 		return r;
 	}
 	
-	@PUT
+	@POST
 	@Path ("/{user}/tickets/{id}/responses")
 	@Consumes (MediaType.APPLICATION_JSON)
 	@Produces (MediaType.APPLICATION_JSON)
