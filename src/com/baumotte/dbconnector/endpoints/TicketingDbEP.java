@@ -110,5 +110,10 @@ public class TicketingDbEP {
 		
 		return r;
 	}
+	
+	@DELETE
+	@Path ("/{user}/tickets/{id}")
+	@Consumes (MediaType.APPLICATION_JSON)
+	
 
 }
