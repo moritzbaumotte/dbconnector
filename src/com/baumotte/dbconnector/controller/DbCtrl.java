@@ -27,7 +27,7 @@ public class DbCtrl {
 	 */
 	public ArrayList<Ticket> getTickets(String email) throws SQLException, ClassNotFoundException {
 		ArrayList<Ticket> tickets = new ArrayList<>();
-		String query = "select id, email, title, text from tickets where email = ?;";
+		String query = "select id, email, title, text, active from tickets where email = ?;";
 		
 		Class.forName(DB_DRIVER);
 		
@@ -42,7 +42,8 @@ public class DbCtrl {
 						rs.getInt("id"),
 						rs.getString("email"),
 						rs.getString("title"),
-						rs.getString("text")
+						rs.getString("text"),
+						rs.getInt("active")
 					));
 		}
 		
@@ -112,6 +113,14 @@ public class DbCtrl {
 		}
 	}
 	
+	/**
+	 * used to add response
+	 * @param response_text
+	 * @param ticket_id
+	 * @param email
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public int submitResponse(String response_text, int ticket_id, String email) throws SQLException, ClassNotFoundException {
 		String query = "insert into responses (response_text, ticket_id, email) values (?, ?, ?)";
 		
@@ -133,6 +142,21 @@ public class DbCtrl {
 				else
 					throw new SQLException("Creation of response failed, no ID obtained.");
 			}
+		}
+	}
+	
+	public void deleteTicket(String email, int ticket_id) throws SQLException, ClassNotFoundException {
+		String query = "update tickets set active = 0 where id = ?;";
+		
+		Class.forName(DB_DRIVER);
+		
+		Connection dbConnection = getDBConnection();
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		prepStmt.setInt(1, ticket_id);
+	
+		int affectedRows = prepStmt.executeUpdate();
+		if(affectedRows == 0) {
+			throw new SQLException("Deletion of ticket failed. No rows effected.");
 		}
 	}
 	

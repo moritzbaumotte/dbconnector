@@ -3,6 +3,7 @@ package com.baumotte.dbconnector.endpoints;
 import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -94,7 +95,7 @@ public class TicketingDbEP {
 	@Path ("/{user}/tickets/{id}/responses")
 	@Consumes (MediaType.APPLICATION_JSON)
 	@Produces (MediaType.APPLICATION_JSON)
-	public Response createResponset(com.baumotte.dbconnector.entities.Response response, @PathParam("user") String email, @PathParam("id") int id) {
+	public Response createResponse(com.baumotte.dbconnector.entities.Response response, @PathParam("user") String email, @PathParam("id") int id) {
 		Response r;
 		
 		try {
@@ -112,6 +113,20 @@ public class TicketingDbEP {
 		}
 		
 		return r;
+	}
+	
+	@DELETE
+	@Path ("/{user}/tickets/{id}")
+	@Consumes (MediaType.APPLICATION_JSON)
+	@Produces (MediaType.APPLICATION_JSON)
+	public void deleteTicket(@PathParam("user") String email, @PathParam("id") int id) {
+		try {
+			dbCtrl.deleteTicket(email, id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
