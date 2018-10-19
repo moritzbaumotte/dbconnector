@@ -115,23 +115,15 @@ public class TicketingDbEP {
 	@DELETE
 	@Path ("/{user}/tickets/{id}")
 	@Consumes (MediaType.APPLICATION_JSON)
-	public Response deleteTicket(@PathParam("user") String email, @PathParam("id") int id) {
-		Response r = null;
-		
+	@Produces (MediaType.APPLICATION_JSON)
+	public void deleteTicket(@PathParam("user") String email, @PathParam("id") int id) {
 		try {
 			dbCtrl.deleteTicket(email, id);
-			r = Response
-					.status(Response.Status.OK)
-					.build();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			r = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
-		
-		return r;
 	}
 
 }

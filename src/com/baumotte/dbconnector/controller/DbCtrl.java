@@ -126,7 +126,18 @@ public class DbCtrl {
 	}
 	
 	public void deleteTicket(String email, int ticket_id) throws SQLException, ClassNotFoundException {
-		//to-do
+		String query = "update tickets set active = 0 where id = ?;";
+		
+		Class.forName(DB_DRIVER);
+		
+		Connection dbConnection = getDBConnection();
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		prepStmt.setInt(1, ticket_id);
+	
+		int affectedRows = prepStmt.executeUpdate();
+		if(affectedRows == 0) {
+			throw new SQLException("Deletion of ticket failed. No rows effected.");
+		}
 	}
 	
 	/**
