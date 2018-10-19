@@ -27,7 +27,7 @@ public class DbCtrl {
 	 */
 	public ArrayList<Ticket> getTickets(String email) throws SQLException, ClassNotFoundException {
 		ArrayList<Ticket> tickets = new ArrayList<>();
-		String query = "select id, email, title, text from tickets where email = ?;";
+		String query = "select id, email, title, text, active from tickets where email = ?;";
 		
 		Class.forName(DB_DRIVER);
 		
@@ -42,7 +42,8 @@ public class DbCtrl {
 						rs.getInt("id"),
 						rs.getString("email"),
 						rs.getString("title"),
-						rs.getString("text")
+						rs.getString("text"),
+						rs.getInt("active")
 					));
 		}
 		
@@ -88,32 +89,75 @@ public class DbCtrl {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public void submitTicket(String email, String title, String text) throws SQLException, ClassNotFoundException {
+	public int submitTicket(String email, String title, String text) throws SQLException, ClassNotFoundException {
 		String query = "insert into tickets (email, title, text) values (?, ?, ?)";
 		
 		Class.forName(DB_DRIVER);
 		
 		Connection dbConnection = getDBConnection();
-		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		prepStmt.setString(1, email);
 		prepStmt.setString(2, title);
 		prepStmt.setString(3, text);
 	
-		prepStmt.executeUpdate();
+		int affectedRows = prepStmt.executeUpdate();
+		if(affectedRows == 0) {
+			throw new SQLException("Creation of ticket failed.");
+		}else {
+			try (ResultSet generatedKeys = prepStmt.getGeneratedKeys()) {
+				if(generatedKeys.next())
+					return generatedKeys.getInt(1);
+				else
+					throw new SQLException("Creation of ticket failed, no ID obtained.");
+			}
+		}
 	}
 	
-	public void submitResponse(String response_text, int ticket_id, String email) throws SQLException, ClassNotFoundException {
+	/**
+	 * used to add response
+	 * @param response_text
+	 * @param ticket_id
+	 * @param email
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
+	public int submitResponse(String response_text, int ticket_id, String email) throws SQLException, ClassNotFoundException {
 		String query = "insert into responses (response_text, ticket_id, email) values (?, ?, ?)";
 		
 		Class.forName(DB_DRIVER);
 		
 		Connection dbConnection = getDBConnection();
-		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		prepStmt.setString(1, response_text);
 		prepStmt.setInt(2, ticket_id);
 		prepStmt.setString(3, email);
 	
-		prepStmt.executeUpdate();
+		int affectedRows = prepStmt.executeUpdate();
+		if(affectedRows == 0) {
+			throw new SQLException("Creation of response failed.");
+		}else {
+			try (ResultSet generatedKeys = prepStmt.getGeneratedKeys()) {
+				if(generatedKeys.next())
+					return generatedKeys.getInt(1);
+				else
+					throw new SQLException("Creation of response failed, no ID obtained.");
+			}
+		}
+	}
+	
+	public void deleteTicket(String email, int ticket_id) throws SQLException, ClassNotFoundException {
+		String query = "update tickets set active = 0 where id = ?;";
+		
+		Class.forName(DB_DRIVER);
+		
+		Connection dbConnection = getDBConnection();
+		PreparedStatement prepStmt = dbConnection.prepareStatement(query);
+		prepStmt.setInt(1, ticket_id);
+	
+		int affectedRows = prepStmt.executeUpdate();
+		if(affectedRows == 0) {
+			throw new SQLException("Deletion of ticket failed. No rows effected.");
+		}
 	}
 	
 	/**
